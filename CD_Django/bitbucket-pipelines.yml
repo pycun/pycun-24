@@ -1,0 +1,24 @@
+#  Template python-build
+
+#  This template allows you to validate your python code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: python:3.8
+
+pipelines:
+  default:
+    - parallel:
+      - step:
+          name: Test
+          caches:
+            - pip
+          script:
+            - if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            - python manage.py test
+    - step:
+        name: Deploying to Production
+        deployment: Production
+        script:
+           - ssh -o StrictHostKeyChecking=no root@167.99.153.62 'bash -s' < ./deploy.sh
+           
+
